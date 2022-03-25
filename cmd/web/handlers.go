@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -12,7 +14,24 @@ func home(writer http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	writer.Write([]byte("Hello there!!"))
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = ts.Execute(writer, nil)
+	if err != nil {
+		log.Println(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func showSnippet(writer http.ResponseWriter, r *http.Request) {
