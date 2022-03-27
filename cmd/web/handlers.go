@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"text/template"
 
 	"github.com/mwettste/snippetbox/pkg/models"
 )
@@ -21,27 +22,25 @@ func (app *application) home(writer http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snippet := range s {
-		fmt.Fprintf(writer, "%v\n", snippet)
+	data := &templateData{Snippets: s}
+
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
 	}
 
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
 
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// 	return
-	// }
-
-	// err = ts.Execute(writer, nil)
-	// if err != nil {
-	// 	app.serverError(writer, err)
-	// 	return
-	// }
+	err = ts.Execute(writer, data)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
 }
 
 func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request) {
@@ -51,7 +50,7 @@ func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	s, err := app.snippets.Get(id)
+	snippet, err := app.snippets.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(writer)
@@ -62,7 +61,24 @@ func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	fmt.Fprintf(writer, "%v", s)
+	data := &templateData{Snippet: snippet}
+	files := []string{
+		"./ui/html/snippet.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
+
+	err = ts.Execute(writer, data)
+	if err != nil {
+		app.serverError(writer, err)
+		return
+	}
 }
 
 func (app *application) createSnippet(writer http.ResponseWriter, r *http.Request) {
