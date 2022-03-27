@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 )
 
-func home(writer http.ResponseWriter, r *http.Request) {
+func (app *application) home(writer http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(writer, r)
 		return
@@ -22,14 +21,14 @@ func home(writer http.ResponseWriter, r *http.Request) {
 
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Println(err.Error())
+		app.errorLog.Println(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	err = ts.Execute(writer, nil)
 	if err != nil {
-		log.Println(err.Error())
+		app.errorLog.Println(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}

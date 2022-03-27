@@ -15,3 +15,7 @@ Although a little bit shorter, it is not recommended to use this in production a
 Some well known go project directory templates:
 * https://github.com/thockin/go-build-template
 * https://peter.bourgon.org/go-best-practices-2016/#repository-structure
+
+# Making logging etc. available in handlers
+To make custom loggers available in other code besides the main function, it is idiomatic to define an application struct and add the loggers there. All the methods that need access to these loggers (or configuration etc.) need then to be written as methods against that struct like so `func (app *application) home(...)`.
+
