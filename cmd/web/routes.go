@@ -6,7 +6,7 @@ import (
 	"github.com/mwettste/snippetbox/pkg/fsmiddleware"
 )
 
-func (app *application) routes() *http.ServeMux {
+func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", app.home)
 	mux.HandleFunc("/snippet", app.showSnippet)
@@ -15,5 +15,5 @@ func (app *application) routes() *http.ServeMux {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fsmiddleware.DisallowDirListing(fileServer)))
 
-	return mux
+	return secureHeaders(mux)
 }
