@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/mwettste/snippetbox/pkg/models"
 )
@@ -22,7 +24,7 @@ func (app *application) home(writer http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) createSnippetForm(writer http.ResponseWriter, r *http.Request) {
-	writer.Write([]byte("Create a new snippet..."))
+	app.render(writer, r, "createsnippet.page.tmpl", nil)
 }
 
 func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request) {
@@ -49,9 +51,41 @@ func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request)
 }
 
 func (app *application) createSnippet(writer http.ResponseWriter, r *http.Request) {
-	title := "0 snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := "7"
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(writer, http.StatusBadRequest)
+		return
+	}
+
+	title := r.PostForm.Get("title")
+	content := r.PostForm.Get("content")
+	expires := r.PostForm.Get("expires")
+
+	errors := make(map[string]string)
+
+	if strings.TrimSpace(title) == "" {
+		errors["title"] = "The title must not be empty"
+	} else if utf8.RuneCountInString(title) > 100 {
+		errors["title"] = "Title is too long (max. 100 characters)"
+	}
+
+	if strings.TrimSpace(content) == "" {
+		errors["content"] = "Content must not be empty"
+	}
+
+	if strings.TrimSpace(expires) == "" {
+		errors["expires"] = "This field cannot be blank"
+	} else if expires != "365" && expires != "7" && expires != "1" {
+		errors["expires"] = "This field is invalid"
+	}
+
+	if len(errors) > 0 {
+		app.render(writer, r, "createsnippet.page.tmpl", &templateData{
+			FormErrors: errors,
+			FormData:   r.PostForm,
+		})
+		return
+	}
 
 	id, err := app.snippets.Insert(title, content, expires)
 	if err != nil {

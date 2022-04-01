@@ -38,3 +38,8 @@ func nicerDate(t time.Time) string {
 When spinning up a new goroutine (e.g. to do some background processing), it is important to understand what happens in a panic inside this goroutine.
 Any optionally registered middlewares that usually catch panics will not be able to handle it and neither will be the Go Http Server.
 So every goroutine that we spin up and has a chance of panicing, needs to have the proper recovery code builtin, otherwise we bring down the server.
+
+# Handling Post Data
+There are two ways of getting data from a request:
+* request.PostForm: gets the data populated by a POST/PATCH/PUT request which contains the data from the request body
+* request.Form map: is populated for all request, contains not just data from the body.
