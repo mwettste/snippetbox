@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"text/template"
 
 	"github.com/mwettste/snippetbox/pkg/models"
 )
@@ -22,25 +21,9 @@ func (app *application) home(writer http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := &templateData{Snippets: s}
-
-	files := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(writer, err)
-		return
-	}
-
-	err = ts.Execute(writer, data)
-	if err != nil {
-		app.serverError(writer, err)
-		return
-	}
+	app.render(writer, r, "home.page.tmpl", &templateData{
+		Snippets: s,
+	})
 }
 
 func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request) {
@@ -61,24 +44,9 @@ func (app *application) showSnippet(writer http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	data := &templateData{Snippet: snippet}
-	files := []string{
-		"./ui/html/snippet.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(writer, err)
-		return
-	}
-
-	err = ts.Execute(writer, data)
-	if err != nil {
-		app.serverError(writer, err)
-		return
-	}
+	app.render(writer, r, "snippet.page.tmpl", &templateData{
+		Snippet: snippet,
+	})
 }
 
 func (app *application) createSnippet(writer http.ResponseWriter, r *http.Request) {
