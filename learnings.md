@@ -33,3 +33,8 @@ func nicerDate(t time.Time) string {
 	return t.Format("02 January 2006 at 15:04")
 }
 ```
+
+# About spinning up goroutines in a webserver
+When spinning up a new goroutine (e.g. to do some background processing), it is important to understand what happens in a panic inside this goroutine.
+Any optionally registered middlewares that usually catch panics will not be able to handle it and neither will be the Go Http Server.
+So every goroutine that we spin up and has a chance of panicing, needs to have the proper recovery code builtin, otherwise we bring down the server.
