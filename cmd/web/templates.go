@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/url"
 	"path/filepath"
 	"text/template"
 	"time"
 
+	"github.com/mwettste/snippetbox/pkg/forms"
 	"github.com/mwettste/snippetbox/pkg/models"
 )
 
@@ -13,8 +13,7 @@ type templateData struct {
 	Snippet     *models.Snippet
 	Snippets    []*models.Snippet
 	CurrentYear int
-	FormData    url.Values
-	FormErrors  map[string]string
+	Form        *forms.Form
 }
 
 func nicerDate(t time.Time) string {
