@@ -19,3 +19,17 @@ Some well known go project directory templates:
 # Making logging etc. available in handlers
 To make custom loggers available in other code besides the main function, it is idiomatic to define an application struct and add the loggers there. All the methods that need access to these loggers (or configuration etc.) need then to be written as methods against that struct like so `func (app *application) home(...)`.
 
+# Formatting Date & Time
+Golang is amazingly flexible with formatting date and time. Below some examples which result in the expected output.
+
+```
+func nicerDate(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
+}
+```
+
+```
+func nicerDate(t time.Time) string {
+	return t.Format("02 January 2006 at 15:04")
+}
+```
