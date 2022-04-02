@@ -14,6 +14,7 @@ type templateData struct {
 	Snippets    []*models.Snippet
 	CurrentYear int
 	Form        *forms.Form
+	Flash       string
 }
 
 func nicerDate(t time.Time) string {
