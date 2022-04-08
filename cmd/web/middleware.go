@@ -33,3 +33,15 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func (app *application) requireAuthentication(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, r *http.Request) {
+		if app.isAuthenticated(r) == false {
+			http.Redirect(writer, r, "/user/login", http.StatusSeeOther)
+			return
+		}
+
+		writer.Header().Add("Cache-Control", "no-store")
+		next.ServeHTTP(writer, r)
+	})
+}
