@@ -16,6 +16,7 @@ type templateData struct {
 	Form            *forms.Form
 	Flash           string
 	IsAuthenticated bool
+	CSRFToken       string
 }
 
 func nicerDate(t time.Time) string {
