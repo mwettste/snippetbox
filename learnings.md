@@ -43,3 +43,13 @@ So every goroutine that we spin up and has a chance of panicing, needs to have t
 There are two ways of getting data from a request:
 * request.PostForm: gets the data populated by a POST/PATCH/PUT request which contains the data from the request body
 * request.Form map: is populated for all request, contains not just data from the body.
+
+# Run all tests using wildcard
+```
+@marco ➜ snippetbox git(main) go test ./...
+ok      github.com/mwettste/snippetbox/cmd/web  0.720s
+?       github.com/mwettste/snippetbox/pkg/forms        [no test files]
+?       github.com/mwettste/snippetbox/pkg/fsmiddleware [no test files]
+?       github.com/mwettste/snippetbox/pkg/models       [no test files]
+?       github.com/mwettste/snippetbox/pkg/models/mysql [no test files]
+```
