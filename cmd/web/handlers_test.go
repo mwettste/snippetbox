@@ -2,21 +2,27 @@ package main
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestPing(t *testing.T) {
+	app := &application{
+		errorLog: log.New(io.Discard, "", 0),
+		infoLog:  log.New(io.Discard, "", 0),
+	}
+
+	ts := httptest.NewTLSServer(app.routes())
+	defer ts.Close()
+
 	// responseRecorder
-	rr := httptest.NewRecorder()
-	r, err := http.NewRequest(http.MethodGet, "/", nil)
+	rs, err := ts.Client().Get(ts.URL + "/ping")
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	ping(rr, r)
-	rs := rr.Result()
 	if rs.StatusCode != http.StatusOK {
 		t.Errorf("want %d; got %d", http.StatusOK, rs.StatusCode)
 	}
