@@ -152,6 +152,10 @@ func (app *application) logoutUser(writer http.ResponseWriter, r *http.Request) 
 	http.Redirect(writer, r, "/", http.StatusSeeOther)
 }
 
-func ping(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("OK"))
+func (app *application) about(writer http.ResponseWriter, r *http.Request) {
+	app.render(writer, r, "about.page.tmpl", &templateData{})
+}
+
+func ping(writer http.ResponseWriter, r *http.Request) {
+	writer.Write([]byte("OK"))
 }
