@@ -36,6 +36,7 @@ type application struct {
 		Get(int) (*models.User, error)
 		ChangePassword(int, string, string) error
 	}
+	isDebug bool
 }
 
 func openDB(dsn string) (*sql.DB, error) {
@@ -53,6 +54,7 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP Network Address")
 	dsn := flag.String("dsn", "web:DEFAULTPWD@/snippetbox?parseTime=true", "MySQL data source name")
 	secret := flag.String("secret", "s6Ndh+pPbnzHbS*+1jl8qGWhTz81qa@ge", "Secret key")
+	isDebug := flag.Bool("debug", false, "To run the website in debug mode")
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
@@ -81,6 +83,7 @@ func main() {
 		templateCache: templateCache,
 		session:       session,
 		users:         &mysql.UserModel{DB: db},
+		isDebug:       *isDebug,
 	}
 
 	tlsConfig := &tls.Config{
