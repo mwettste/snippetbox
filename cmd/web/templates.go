@@ -10,13 +10,14 @@ import (
 )
 
 type templateData struct {
-	Snippet         *models.Snippet
-	Snippets        []*models.Snippet
-	CurrentYear     int
-	Form            *forms.Form
-	Flash           string
-	IsAuthenticated bool
-	CSRFToken       string
+	Snippet           *models.Snippet
+	Snippets          []*models.Snippet
+	CurrentYear       int
+	Form              *forms.Form
+	Flash             string
+	IsAuthenticated   bool
+	CSRFToken         string
+	AuthenticatedUser *models.User
 }
 
 func nicerDate(t time.Time) string {

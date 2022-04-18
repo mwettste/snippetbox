@@ -1,0 +1,22 @@
+{{template "base" .}}
+
+{{define "title"}}User Profile{{end}}
+
+{{define "main"}}
+    <h2>User Profile</h2>
+    {{with .AuthenticatedUser}}
+        <table>
+            <tr>
+                <th>Name</th>
+                <td>{{.Name}}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{.Email}}</td>
+            <tr>
+                <th>Joined</th>
+                <td>{{nicerDate .Created}}</td>
+            </tr>
+        </table>
+    {{end}}
+{{end}}
